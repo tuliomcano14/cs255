@@ -1,0 +1,136 @@
+package Project3;
+
+import java.util.Scanner;
+
+public class NanoNumbers {
+
+    static public void main(String[] args) {
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println(parseNano("-[["));
+        System.out.println(toString(-60));
+        /*
+        //System.out.println("What is your name?");
+        //String output = scanner.nextLine();
+        //System.out.println("Hello " + output + "!");
+        System.out.println("Enter first nano number x= ");
+        String output = scanner.nextLine();
+        int fNano = Integer.parseInt(toDecimal(output));
+        System.out.println("The value of the first nano number in decimal is: " + fNano);
+
+        System.out.println("Enter second nano number x= ");
+        output = scanner.nextLine();
+
+        int sNano = Integer.parseInt(toDecimal(output));
+        System.out.println("The value of the second nano number in decimal is: " + sNano);
+
+        int sum = fNano + sNano;
+        System.out.println("The sum in decimal number system is: " + sum);
+
+        output = parseNano(sum);
+        System.out.println("The sum in nano number system is: " + output);*/
+
+    }
+
+    static public char getNano(int i) {
+
+        switch (i){
+            case 0:  return '#';
+            case 1:  return '!';
+            case 2:  return '%';
+            case 3:  return '@';
+            case 4:  return '(';
+            case 5:  return ')';
+            case 6:  return '[';
+            case 7:  return ']';
+            case 8:  return '$';
+            default: return ' ';
+        }
+    }
+
+    static public int getInt(char i) {
+
+        switch (i){
+            case '#':  return 0;
+            case '!':  return 1;
+            case '%':  return 2;
+            case '@':  return 3;
+            case '(':  return 4;
+            case ')':  return 5;
+            case '[':  return 6;
+            case ']':  return 7;
+            case '$':  return 8;
+            default: return ' ';
+        }
+    }
+
+    public static String toString(int input) {
+
+        String result = "";
+        int   nDigits = 0;
+        boolean inputWasNeg = false;
+        char[] digits = new char[100];
+        int[] remainder = new int[100];
+
+        if (input < 0) {
+            inputWasNeg = true;
+            input = -input;
+        }
+
+        //transforms all the decimal numbers into normal base 9 numbers.
+        for (int i = input; i > 0; i/=9, nDigits++)
+            remainder[nDigits] = i % 9;
+
+        //transforms all the normal base 9 numbers into nano numbers.
+        for (int i = 0; i < nDigits; i++)
+            digits[i] = getNano(remainder[i]);
+
+        //flips the remainders.
+        for (int i = nDigits - 1; i >= 0; i--)
+            result = result + digits[i];
+
+        //adds a - to negative numbers.
+        if (inputWasNeg)
+            result = "-" + result;
+
+        //edge case where the sum is 0
+        if(input == 0)
+            return "#";
+
+        return(result);
+
+    }
+
+    private static int parseNano(String input) {
+
+        int nDigits = 0;
+        int dec = 0;
+        boolean inputWasNeg = false;
+        char[] digits = input.toCharArray();
+        int [] intDigits = new int[digits.length];
+
+        //transforms all the nano numbers into normal base 9 numbers, and then transforms them into
+        //decimal numbers.
+        if (digits[0] == '-') {
+            inputWasNeg = true;
+            for (int i = 0; i + 1 < digits.length; i++, nDigits++)
+                intDigits[i] = getInt(digits[i + 1]);
+            for (int i = 0; i + 1 < intDigits.length; i++, nDigits--)
+                dec+= (int) (Math.pow(9, i)) * intDigits[nDigits - 1];
+        }
+        else {
+            for (int i = 0; i < digits.length; i++, nDigits++)
+                intDigits[i] = getInt(digits[i]);
+            for (int i = 0; i < intDigits.length; i++, nDigits--)
+                dec+= (int) (Math.pow(9, i)) * intDigits[nDigits - 1];
+        }
+
+        //adds a - to negative numbers.
+        if (inputWasNeg)
+            dec = -dec;
+
+        return(dec);
+    }
+
+}
+
